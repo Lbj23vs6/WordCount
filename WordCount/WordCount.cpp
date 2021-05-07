@@ -1,43 +1,41 @@
 ﻿// WordCount.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
 //
-
-#include "iostream"
-#include "fstream"
-#include "cstdlib"
-using namespace std;
-
-int main(int argv, char** arg)
+#pragma warning(disable:4996)
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+int main(int argc, char *argv[])
 {
-	string path = "C:\\Users\\ASUS\\Desktop\\练习1.txt";
-	char context[1000] = "\0";
-	char con[1000] = "";
-	char text[300][20] = {};
-	ifstream File(path);
-	while (!File.eof())
-	{
-		File.getline(context, 100);
+	int ch, count = 1;
+	FILE *pt;    //文件指针
+
+	// 判断是否输入文件
+	if (argc != 3) {
+		printf("请使用格式: %s 文件名", argv[0]);
+		exit(1);    //非正常退出
 	}
-	int x1 = 0;
-	int j = 0;
-	for (int i = 0; i < strlen(context) + 1; i++)
-	{
-		if (context[i] >= 'a'&& context[i] <= 'z')
-		{
-			con[x1] = context[i];
-			x1++;
+
+	// 判断能否成功打开文件
+	if ((pt = fopen(argv[2], "r")) == NULL) {  //将argv[1]赋值给指针pt
+		printf("打开文件 %s 失败", argv[2]);
+		exit(1);
+	}
+
+	if (strcmp(argv[1], "-c") == 0) {
+		count = 0;
+		while ((ch = getc(pt)) != EOF) {  //EOF 表示文件结束
+			count++;
 		}
-		else
-		{
-			strcpy_s(text[j], con);
-			j++;
-			x1 = 0;
+		printf("字符数：%d个\n", count);
+	}
+	else {
+		while ((ch = getc(pt)) != EOF) {
+			if ((ch == ' ') || (ch == ','))
+				count++;
 		}
+		printf("单词数：%d个\n", count);
 	}
-	cout << "一共" << j << "单词，如下：" << endl;
-	for (int i = 0; i < j; i++)
-	{
-		cout << "第" << i + 1 << "个单词是：" << text[i] << endl;
-	}
+	fclose(pt);
 	return 0;
 }
 
